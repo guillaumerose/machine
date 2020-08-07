@@ -18,7 +18,6 @@ type Driver struct {
 	DiskPath             string
 	MacAddress           string
 	DisableDynamicMemory bool
-	SSHKeyPath           string
 }
 
 const (

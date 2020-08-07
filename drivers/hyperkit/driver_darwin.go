@@ -18,7 +18,6 @@ type Driver struct {
 	VmlinuzPath   string
 	InitrdPath    string
 	KernelCmdLine string
-	SSHKeyPath    string
 	HyperKitPath  string
 }
 
