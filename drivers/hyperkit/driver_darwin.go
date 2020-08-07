@@ -10,9 +10,7 @@ const (
 )
 
 type Driver struct {
-	*drivers.BaseDriver
-	CPU           int
-	Memory        int
+	*drivers.VMDriver
 	Cmdline       string
 	UUID          string
 	VpnKitSock    string
@@ -20,18 +18,19 @@ type Driver struct {
 	VmlinuzPath   string
 	InitrdPath    string
 	KernelCmdLine string
-	DiskPathURL   string
 	SSHKeyPath    string
 	HyperKitPath  string
 }
 
 func NewDriver(hostName, storePath string) *Driver {
 	return &Driver{
-		BaseDriver: &drivers.BaseDriver{
-			MachineName: hostName,
-			StorePath:   storePath,
+		VMDriver: &drivers.VMDriver{
+			BaseDriver: &drivers.BaseDriver{
+				MachineName: hostName,
+				StorePath:   storePath,
+			},
+			Memory: defaultMemory,
+			CPU:    defaultCPU,
 		},
-		Memory: defaultMemory,
-		CPU:    defaultCPU,
 	}
 }

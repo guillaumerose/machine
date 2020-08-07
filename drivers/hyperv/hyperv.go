@@ -12,13 +12,10 @@ import (
 )
 
 type Driver struct {
-	*drivers.BaseDriver
+	*drivers.VMDriver
 	CrcDiskCopier        CRCDiskCopier
 	VirtualSwitch        string
 	DiskPath             string
-	DiskPathUrl          string
-	Memory               int
-	CPU                  int
 	MacAddress           string
 	DisableDynamicMemory bool
 	SSHKeyPath           string
@@ -34,12 +31,14 @@ const (
 func NewDriver(hostName, storePath string) *Driver {
 	return &Driver{
 		CrcDiskCopier:        NewCRCDiskCopier(),
-		Memory:               defaultMemory,
-		CPU:                  defaultCPU,
 		DisableDynamicMemory: defaultDisableDynamicMemory,
-		BaseDriver: &drivers.BaseDriver{
-			MachineName: hostName,
-			StorePath:   storePath,
+		VMDriver: &drivers.VMDriver{
+			BaseDriver: &drivers.BaseDriver{
+				MachineName: hostName,
+				StorePath:   storePath,
+			},
+			Memory: defaultMemory,
+			CPU:    defaultCPU,
 		},
 	}
 }
@@ -171,7 +170,7 @@ func (d *Driver) PreCreateCheck() error {
 }
 
 func (d *Driver) Create() error {
-	if err := d.CrcDiskCopier.CopyDiskToMachineDir(d.StorePath, d.MachineName, d.DiskPathUrl); err != nil {
+	if err := d.CrcDiskCopier.CopyDiskToMachineDir(d.StorePath, d.MachineName, d.DiskPathURL); err != nil {
 		return err
 	}
 

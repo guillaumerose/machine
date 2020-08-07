@@ -5,17 +5,13 @@ import (
 )
 
 type Driver struct {
-	*drivers.BaseDriver
+	*drivers.VMDriver
 
 	// Driver specific configuration
-	Memory      int
-	CPU         int
-	Network     string
-	DiskPath    string
-	CacheMode   string
-	IOMode      string
-	DiskPathURL string
-	SSHKeyPath  string
+	Network   string
+	DiskPath  string
+	CacheMode string
+	IOMode    string
 }
 
 const (
@@ -27,12 +23,14 @@ const (
 
 func NewDriver(hostName, storePath string) *Driver {
 	return &Driver{
-		BaseDriver: &drivers.BaseDriver{
-			MachineName: hostName,
-			StorePath:   storePath,
+		VMDriver: &drivers.VMDriver{
+			BaseDriver: &drivers.BaseDriver{
+				MachineName: hostName,
+				StorePath:   storePath,
+			},
+			Memory: defaultMemory,
+			CPU:    defaultCPU,
 		},
-		Memory:    defaultMemory,
-		CPU:       defaultCPU,
 		CacheMode: defaultCacheMode,
 		IOMode:    defaultIOMode,
 	}
