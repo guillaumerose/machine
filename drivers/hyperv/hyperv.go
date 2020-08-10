@@ -15,7 +15,6 @@ import (
 type Driver struct {
 	*drivers.VMDriver
 	VirtualSwitch        string
-	DiskPath             string
 	MacAddress           string
 	DisableDynamicMemory bool
 }
@@ -168,7 +167,8 @@ func (d *Driver) PreCreateCheck() error {
 }
 
 func (d *Driver) Create() error {
-	if err := mcnutils.CopyFile(d.ImageSourcePath, d.ResolveStorePath("crc.vhdx")); err != nil {
+	diskPath := d.ResolveStorePath(fmt.Sprintf("%s.%s", d.MachineName, d.ImageFormat))
+	if err := mcnutils.CopyFile(d.ImageSourcePath, diskPath); err != nil {
 		return err
 	}
 
@@ -213,7 +213,7 @@ func (d *Driver) Create() error {
 
 	if err := cmd("Hyper-V\\Add-VMHardDiskDrive",
 		"-VMName", d.MachineName,
-		"-Path", quote(d.DiskPath)); err != nil {
+		"-Path", quote(diskPath)); err != nil {
 		return err
 	}
 
