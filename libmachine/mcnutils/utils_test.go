@@ -19,7 +19,7 @@ func TestCopyFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	srcFile.Write([]byte(testStr))
+	_, _ = srcFile.Write([]byte(testStr))
 	srcFile.Close()
 
 	srcFilePath := filepath.Join(os.TempDir(), srcFi.Name())

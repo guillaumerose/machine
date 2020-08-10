@@ -53,10 +53,7 @@ func TestStoreSave(t *testing.T) {
 
 	files, _ := ioutil.ReadDir(path)
 	for _, f := range files {
-		r, err := regexp.Compile("config.json.tmp*")
-		if err != nil {
-			t.Fatalf("Failed to compile regexp string")
-		}
+		r := regexp.MustCompile("config.json.tmp*")
 		if r.MatchString(f.Name()) {
 			t.Fatalf("Failed to remove temp filestore:%s", f.Name())
 		}
@@ -145,6 +142,9 @@ func TestStoreList(t *testing.T) {
 	}
 
 	hosts, err := store.List()
+	if err != nil {
+		t.Fatal(err)
+	}
 	if len(hosts) != 1 {
 		t.Fatalf("List returned %d items, expected 1", len(hosts))
 	}
@@ -164,11 +164,18 @@ func TestStoreExists(t *testing.T) {
 	}
 
 	exists, err := store.Exists(h.Name)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if exists {
 		t.Fatal("Host should not exist before saving")
 	}
 
 	if err := store.Save(h); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := store.SetExists(h.Name); err != nil {
 		t.Fatal(err)
 	}
 

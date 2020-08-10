@@ -33,8 +33,8 @@ func TestGetNameAndItsPpidOfParent(t *testing.T) {
 }
 
 func TestGetNameAndItsPpidOfGrandParent(t *testing.T) {
-	shell, shellppid, err := getNameAndItsPpid(os.Getppid())
-	shell, shellppid, err = getNameAndItsPpid(shellppid)
+	_, shellppid, _ := getNameAndItsPpid(os.Getppid())
+	shell, _, err := getNameAndItsPpid(shellppid)
 
 	assert.Equal(t, "powershell.exe", shell)
 	assert.NoError(t, err)
