@@ -25,9 +25,9 @@ type BaseDriver struct {
 
 type VMDriver struct {
 	*BaseDriver
-	DiskPathURL string
-	Memory      int
-	CPU         int
+	ImageSourcePath string
+	Memory          int
+	CPU             int
 }
 
 // DriverName returns the name of the driver
