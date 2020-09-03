@@ -96,3 +96,7 @@ func (d *BaseDriver) GetBundleName() (string, error) {
 	}
 	return d.BundleName, nil
 }
+
+func (d *BaseDriver) UpdateConfigRaw(rawData []byte) error {
+	return ErrNotImplemented
+}
