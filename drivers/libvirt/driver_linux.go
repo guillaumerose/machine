@@ -12,6 +12,7 @@ type Driver struct {
 	DiskPath  string
 	CacheMode string
 	IOMode    string
+	VSock     bool
 }
 
 const (
