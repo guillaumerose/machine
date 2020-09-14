@@ -3,7 +3,7 @@ GO_LDFLAGS := -X `go list ./version`.GitCommit=`git rev-parse --short HEAD 2>/de
 GO_GCFLAGS :=
 
 # Full package list
-PKGS := $(shell go list -tags "$(BUILDTAGS)" ./... | grep -v "/vendor/" | grep -v "/cmd")
+PKGS := ./libmachine/... ./drivers/...
 
 # Resolving binary dependencies for specific targets
 GOLINT_BIN := $(GOPATH)/bin/golint
