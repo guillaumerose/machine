@@ -181,7 +181,10 @@ func (client *NativeClient) session(command string) (*ssh.Client, *ssh.Session, 
 		return nil, nil, fmt.Errorf("Mysterious error dialing TCP for SSH (we already succeeded at least once) : %s", err)
 	}
 	session, err := conn.NewSession()
-
+	if err != nil {
+		_ = conn.Close()
+		return nil, nil, err
+	}
 	return conn, session, err
 }
 
