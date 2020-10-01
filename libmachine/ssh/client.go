@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/code-ready/machine/libmachine/log"
 	"github.com/code-ready/machine/libmachine/mcnutils"
@@ -156,6 +157,7 @@ func NewNativeConfig(user string, auth *Auth) (ssh.ClientConfig, error) {
 		Auth: authMethods,
 		// #nosec G106
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		Timeout:         time.Minute,
 	}, nil
 }
 
