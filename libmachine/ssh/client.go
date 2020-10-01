@@ -191,7 +191,7 @@ func (client *NativeClient) session() (*ssh.Client, *ssh.Session, error) {
 func (client *NativeClient) Output(command string) (string, error) {
 	conn, session, err := client.session()
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	defer closeConn(conn)
 	defer session.Close()
@@ -206,7 +206,7 @@ func (client *NativeClient) Output(command string) (string, error) {
 func (client *NativeClient) OutputWithPty(command string) (string, error) {
 	conn, session, err := client.session()
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	defer closeConn(conn)
 	defer session.Close()
