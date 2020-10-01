@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/code-ready/machine/libmachine/log"
-	"github.com/code-ready/machine/libmachine/mcnutils"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -161,24 +160,10 @@ func NewNativeConfig(user string, auth *Auth) (ssh.ClientConfig, error) {
 	}, nil
 }
 
-func (client *NativeClient) dialSuccess() bool {
-	conn, err := ssh.Dial("tcp", net.JoinHostPort(client.Hostname, strconv.Itoa(client.Port)), &client.Config)
-	if err != nil {
-		log.Debugf("Error dialing TCP: %s", err)
-		return false
-	}
-	closeConn(conn)
-	return true
-}
-
 func (client *NativeClient) session() (*ssh.Client, *ssh.Session, error) {
-	if err := mcnutils.WaitFor(client.dialSuccess); err != nil {
-		return nil, nil, fmt.Errorf("Error attempting SSH client dial: %s", err)
-	}
-
 	conn, err := ssh.Dial("tcp", net.JoinHostPort(client.Hostname, strconv.Itoa(client.Port)), &client.Config)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Mysterious error dialing TCP for SSH (we already succeeded at least once) : %s", err)
+		return nil, nil, err
 	}
 	session, err := conn.NewSession()
 	if err != nil {
