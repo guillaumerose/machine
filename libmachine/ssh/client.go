@@ -194,8 +194,10 @@ func (client *NativeClient) Output(command string) (string, error) {
 	defer session.Close()
 
 	output, err := session.CombinedOutput(command)
-
-	return string(output), err
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
 }
 
 func (client *NativeClient) OutputWithPty(command string) (string, error) {
