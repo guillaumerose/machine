@@ -10,9 +10,9 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/code-ready/machine/libmachine/log"
-	"github.com/code-ready/machine/libmachine/mcnutils"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -156,50 +156,42 @@ func NewNativeConfig(user string, auth *Auth) (ssh.ClientConfig, error) {
 		Auth: authMethods,
 		// #nosec G106
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		Timeout:         time.Minute,
 	}, nil
 }
 
-func (client *NativeClient) dialSuccess() bool {
+func (client *NativeClient) session() (*ssh.Client, *ssh.Session, error) {
 	conn, err := ssh.Dial("tcp", net.JoinHostPort(client.Hostname, strconv.Itoa(client.Port)), &client.Config)
 	if err != nil {
-		log.Debugf("Error dialing TCP: %s", err)
-		return false
-	}
-	closeConn(conn)
-	return true
-}
-
-func (client *NativeClient) session(command string) (*ssh.Client, *ssh.Session, error) {
-	if err := mcnutils.WaitFor(client.dialSuccess); err != nil {
-		return nil, nil, fmt.Errorf("Error attempting SSH client dial: %s", err)
-	}
-
-	conn, err := ssh.Dial("tcp", net.JoinHostPort(client.Hostname, strconv.Itoa(client.Port)), &client.Config)
-	if err != nil {
-		return nil, nil, fmt.Errorf("Mysterious error dialing TCP for SSH (we already succeeded at least once) : %s", err)
+		return nil, nil, err
 	}
 	session, err := conn.NewSession()
-
+	if err != nil {
+		_ = conn.Close()
+		return nil, nil, err
+	}
 	return conn, session, err
 }
 
 func (client *NativeClient) Output(command string) (string, error) {
-	conn, session, err := client.session(command)
+	conn, session, err := client.session()
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	defer closeConn(conn)
 	defer session.Close()
 
 	output, err := session.CombinedOutput(command)
-
-	return string(output), err
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
 }
 
 func (client *NativeClient) OutputWithPty(command string) (string, error) {
-	conn, session, err := client.session(command)
+	conn, session, err := client.session()
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	defer closeConn(conn)
 	defer session.Close()
@@ -229,7 +221,7 @@ func (client *NativeClient) OutputWithPty(command string) (string, error) {
 }
 
 func (client *NativeClient) Start(command string) (io.ReadCloser, io.ReadCloser, error) {
-	conn, session, err := client.session(command)
+	conn, session, err := client.session()
 	if err != nil {
 		return nil, nil, err
 	}
