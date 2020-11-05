@@ -30,7 +30,6 @@ Please use this plugin through the main 'crc' binary.
 	}
 
 	log.SetDebug(true)
-	os.Setenv("MACHINE_DEBUG", "1")
 
 	rpcd := rpcdriver.NewRPCServerDriver(d)
 	if err := rpc.RegisterName(rpcdriver.RPCServiceNameV0, rpcd); err != nil {
