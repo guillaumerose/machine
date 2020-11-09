@@ -127,33 +127,6 @@ func TestStoreRemove(t *testing.T) {
 	}
 }
 
-func TestStoreList(t *testing.T) {
-	defer cleanup()
-
-	store := getTestStore()
-
-	h, err := hosttest.GetDefaultTestHost()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if err := store.Save(h); err != nil {
-		t.Fatal(err)
-	}
-
-	hosts, err := store.List()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(hosts) != 1 {
-		t.Fatalf("List returned %d items, expected 1", len(hosts))
-	}
-
-	if hosts[0] != h.Name {
-		t.Fatalf("hosts[0] name is incorrect, got: %s", hosts[0])
-	}
-}
-
 func TestStoreExists(t *testing.T) {
 	defer cleanup()
 	store := getTestStore()

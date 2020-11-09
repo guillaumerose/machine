@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/code-ready/machine/libmachine/host"
 	"github.com/code-ready/machine/libmachine/log"
@@ -77,23 +76,6 @@ func (s Filestore) Save(host *host.Host) error {
 func (s Filestore) Remove(name string) error {
 	hostPath := filepath.Join(s.GetMachinesDir(), name)
 	return os.RemoveAll(hostPath)
-}
-
-func (s Filestore) List() ([]string, error) {
-	dir, err := ioutil.ReadDir(s.GetMachinesDir())
-	if err != nil && !os.IsNotExist(err) {
-		return nil, err
-	}
-
-	hostNames := []string{}
-
-	for _, file := range dir {
-		if file.IsDir() && !strings.HasPrefix(file.Name(), ".") {
-			hostNames = append(hostNames, file.Name())
-		}
-	}
-
-	return hostNames, nil
 }
 
 func (s Filestore) SetExists(name string) error {
