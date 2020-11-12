@@ -40,8 +40,6 @@ type Options struct {
 
 type Metadata struct {
 	ConfigVersion int
-	DriverName    string
-	HostOptions   Options
 }
 
 func ValidateHostName(name string) bool {

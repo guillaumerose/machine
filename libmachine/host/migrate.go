@@ -31,28 +31,13 @@ func (r *RawDataDriver) UpdateConfigRaw(rawData []byte) error {
 	return r.UnmarshalJSON(rawData)
 }
 
-func getMigratedHostMetadata(data []byte) (*Metadata, error) {
-	// HostMetadata is for a "first pass" so we can then load the driver
-	var (
-		hostMetadata *MetadataV0
-	)
-
-	if err := json.Unmarshal(data, &hostMetadata); err != nil {
-		return &Metadata{}, err
-	}
-
-	migratedHostMetadata := MigrateHostMetadataV0ToHostMetadataV1(hostMetadata)
-
-	return migratedHostMetadata, nil
-}
-
 func MigrateHost(name string, data []byte) (*Host, error) {
-	migratedHostMetadata, err := getMigratedHostMetadata(data)
-	if err != nil {
+	var hostMetadata Metadata
+	if err := json.Unmarshal(data, &hostMetadata); err != nil {
 		return nil, err
 	}
 
-	if migratedHostMetadata.ConfigVersion != version.ConfigVersion {
+	if hostMetadata.ConfigVersion != version.ConfigVersion {
 		return nil, errUnexpectedConfigVersion
 	}
 
