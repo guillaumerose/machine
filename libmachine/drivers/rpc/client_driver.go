@@ -73,9 +73,7 @@ const (
 	RemoveMethod          = `.Remove`
 	StartMethod           = `.Start`
 	StopMethod            = `.Stop`
-	RestartMethod         = `.Restart`
 	KillMethod            = `.Kill`
-	UpgradeMethod         = `.Upgrade`
 )
 
 func (ic *InternalClient) Call(serviceMethod string, args interface{}, reply interface{}) error {
@@ -314,8 +312,4 @@ func (c *RPCClientDriver) Stop() error {
 
 func (c *RPCClientDriver) Kill() error {
 	return c.Client.Call(KillMethod, struct{}{}, nil)
-}
-
-func (c *RPCClientDriver) Upgrade() error {
-	return c.Client.Call(UpgradeMethod, struct{}{}, nil)
 }
