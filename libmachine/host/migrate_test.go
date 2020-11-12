@@ -11,7 +11,6 @@ import (
 func TestMigrateHost(t *testing.T) {
 	testCases := []struct {
 		description            string
-		hostBefore             *Host
 		rawData                []byte
 		expectedHostAfter      *Host
 		expectedMigrationError error
@@ -24,9 +23,6 @@ func TestMigrateHost(t *testing.T) {
 			// Note that we don't check for the presence of RawDriver's literal "on
 			// disk" here.  It's intentional.
 			description: "Config version 3 load with existing RawDriver on disk",
-			hostBefore: &Host{
-				Name: "default",
-			},
 			rawData: []byte(`{
     "ConfigVersion": 3,
     "Driver": {"MachineName": "default"},
@@ -68,9 +64,6 @@ func TestMigrateHost(t *testing.T) {
 		},
 		{
 			description: "Config version 4 (from the FUTURE) on disk",
-			hostBefore: &Host{
-				Name: "default",
-			},
 			rawData: []byte(`{
     "ConfigVersion": 4,
     "Driver": {"MachineName": "default"},
@@ -90,9 +83,6 @@ func TestMigrateHost(t *testing.T) {
 		},
 		{
 			description: "Config version 3 load WITHOUT any existing RawDriver field on disk",
-			hostBefore: &Host{
-				Name: "default",
-			},
 			rawData: []byte(`{
     "ConfigVersion": 3,
     "Driver": {"MachineName": "default"},
@@ -129,7 +119,7 @@ func TestMigrateHost(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		actualHostAfter, actualMigrationError := MigrateHost(tc.hostBefore, tc.rawData)
+		actualHostAfter, actualMigrationError := MigrateHost("default", tc.rawData)
 
 		assert.Equal(t, tc.expectedHostAfter, actualHostAfter)
 		assert.Equal(t, tc.expectedMigrationError, actualMigrationError)

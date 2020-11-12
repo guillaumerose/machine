@@ -47,7 +47,7 @@ func getMigratedHostMetadata(data []byte) (*Metadata, error) {
 	return migratedHostMetadata, nil
 }
 
-func MigrateHost(h *Host, data []byte) (*Host, error) {
+func MigrateHost(name string, data []byte) (*Host, error) {
 	migratedHostMetadata, err := getMigratedHostMetadata(data)
 	if err != nil {
 		return nil, err
@@ -58,11 +58,14 @@ func MigrateHost(h *Host, data []byte) (*Host, error) {
 	}
 
 	globalStorePath := filepath.Dir(filepath.Dir(migratedHostMetadata.HostOptions.AuthOptions.StorePath))
-	driver := &RawDataDriver{none.NewDriver(h.Name, globalStorePath), nil}
-	h.Driver = driver
+	driver := &RawDataDriver{none.NewDriver(name, globalStorePath), nil}
+	h := Host{
+		Name:   name,
+		Driver: driver,
+	}
 	if err := json.Unmarshal(data, &h); err != nil {
 		return nil, fmt.Errorf("Error unmarshalling most recent host version: %s", err)
 	}
 	h.RawDriver = driver.Data
-	return h, nil
+	return &h, nil
 }

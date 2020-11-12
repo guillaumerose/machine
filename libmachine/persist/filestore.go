@@ -104,26 +104,12 @@ func (s Filestore) Exists(name string) (bool, error) {
 	return false, err
 }
 
-func (s Filestore) loadConfig(h *host.Host) error {
-	data, err := ioutil.ReadFile(filepath.Join(s.GetMachinesDir(), h.Name, "config.json"))
+func (s Filestore) loadConfig(name string) (*host.Host, error) {
+	data, err := ioutil.ReadFile(filepath.Join(s.GetMachinesDir(), name, "config.json"))
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	// Remember the machine name so we don't have to pass it through each
-	// struct in the migration.
-	name := h.Name
-
-	migratedHost, err := host.MigrateHost(h, data)
-	if err != nil {
-		return fmt.Errorf("Error getting migrated host: %s", err)
-	}
-
-	*h = *migratedHost
-
-	h.Name = name
-
-	return nil
+	return host.MigrateHost(name, data)
 }
 
 func (s Filestore) Load(name string) (*host.Host, error) {
@@ -134,14 +120,5 @@ func (s Filestore) Load(name string) (*host.Host, error) {
 			Name: name,
 		}
 	}
-
-	host := &host.Host{
-		Name: name,
-	}
-
-	if err := s.loadConfig(host); err != nil {
-		return nil, err
-	}
-
-	return host, nil
+	return s.loadConfig(name)
 }
