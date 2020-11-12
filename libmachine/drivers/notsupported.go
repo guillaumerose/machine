@@ -3,7 +3,6 @@ package drivers
 import (
 	"fmt"
 
-	"github.com/code-ready/machine/libmachine/mcnflag"
 	"github.com/code-ready/machine/libmachine/state"
 )
 
@@ -40,24 +39,8 @@ func (d *DriverNotSupported) PreCreateCheck() error {
 	return NotSupported{d.DriverName()}
 }
 
-func (d *DriverNotSupported) GetCreateFlags() []mcnflag.Flag {
-	return nil
-}
-
-func (d *DriverNotSupported) SetConfigFromFlags(flags DriverOptions) error {
-	return NotSupported{d.DriverName()}
-}
-
 func (d *DriverNotSupported) UpdateConfigRaw(rawDriver []byte) error {
 	return NotSupported{d.DriverName()}
-}
-
-func (d *DriverNotSupported) GetURL() (string, error) {
-	return "", NotSupported{d.DriverName()}
-}
-
-func (d *DriverNotSupported) GetSSHHostname() (string, error) {
-	return "", NotSupported{d.DriverName()}
 }
 
 func (d *DriverNotSupported) GetState() (state.State, error) {

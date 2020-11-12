@@ -178,18 +178,10 @@ func TestStoreExists(t *testing.T) {
 func TestStoreLoad(t *testing.T) {
 	defer cleanup()
 
-	expectedURL := "unix:///foo/baz"
-	flags := hosttest.GetTestDriverFlags()
-	flags.Data["url"] = expectedURL
-
 	store := getTestStore()
 
 	h, err := hosttest.GetDefaultTestHost()
 	if err != nil {
-		t.Fatal(err)
-	}
-
-	if err := h.Driver.SetConfigFromFlags(flags); err != nil {
 		t.Fatal(err)
 	}
 
@@ -211,16 +203,5 @@ func TestStoreLoad(t *testing.T) {
 
 	if err := json.Unmarshal(rawDataDriver.Data, &realDriver); err != nil {
 		t.Fatalf("Error unmarshaling rawDataDriver data into concrete 'none' driver: %s", err)
-	}
-
-	h.Driver = realDriver
-
-	actualURL, err := h.URL()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if actualURL != expectedURL {
-		t.Fatalf("GetURL is not %q, got %q", expectedURL, actualURL)
 	}
 }

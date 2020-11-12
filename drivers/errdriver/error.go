@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/code-ready/machine/libmachine/drivers"
-	"github.com/code-ready/machine/libmachine/mcnflag"
 	"github.com/code-ready/machine/libmachine/state"
 )
 
@@ -40,20 +39,8 @@ func (d *Driver) PreCreateCheck() error {
 	return NotLoadable{d.Name}
 }
 
-func (d *Driver) GetCreateFlags() []mcnflag.Flag {
-	return nil
-}
-
-func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
-	return NotLoadable{d.Name}
-}
-
 func (d *Driver) UpdateConfigRaw(rawData []byte) error {
 	return NotLoadable{d.Name}
-}
-
-func (d *Driver) GetURL() (string, error) {
-	return "", NotLoadable{d.Name}
 }
 
 func (d *Driver) GetMachineName() string {
@@ -62,22 +49,6 @@ func (d *Driver) GetMachineName() string {
 
 func (d *Driver) GetIP() (string, error) {
 	return "1.2.3.4", NotLoadable{d.Name}
-}
-
-func (d *Driver) GetSSHHostname() (string, error) {
-	return "", NotLoadable{d.Name}
-}
-
-func (d *Driver) GetSSHKeyPath() string {
-	return ""
-}
-
-func (d *Driver) GetSSHPort() (int, error) {
-	return 0, NotLoadable{d.Name}
-}
-
-func (d *Driver) GetSSHUsername() string {
-	return ""
 }
 
 func (d *Driver) GetBundleName() (string, error) {

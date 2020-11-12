@@ -110,7 +110,3 @@ func (h *Host) UpdateConfig(rawConfig []byte) error {
 
 	return nil
 }
-
-func (h *Host) URL() (string, error) {
-	return h.Driver.GetURL()
-}
