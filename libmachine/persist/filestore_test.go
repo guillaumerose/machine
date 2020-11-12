@@ -26,9 +26,7 @@ func getTestStore() Filestore {
 	}
 
 	return Filestore{
-		Path:             tmpDir,
-		CaCertPath:       filepath.Join(tmpDir, "certs", "ca-cert.pem"),
-		CaPrivateKeyPath: filepath.Join(tmpDir, "certs", "ca-key.pem"),
+		Path: tmpDir,
 	}
 }
 

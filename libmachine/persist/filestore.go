@@ -13,16 +13,12 @@ import (
 )
 
 type Filestore struct {
-	Path             string
-	CaCertPath       string
-	CaPrivateKeyPath string
+	Path string
 }
 
-func NewFilestore(path, caCertPath, caPrivateKeyPath string) *Filestore {
+func NewFilestore(path string) *Filestore {
 	return &Filestore{
-		Path:             path,
-		CaCertPath:       caCertPath,
-		CaPrivateKeyPath: caPrivateKeyPath,
+		Path: path,
 	}
 }
 
