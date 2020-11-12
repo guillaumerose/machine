@@ -58,11 +58,6 @@ func (d *Driver) Stop() error {
 	return nil
 }
 
-func (d *Driver) Restart() error {
-	d.MockState = state.Running
-	return nil
-}
-
 func (d *Driver) Kill() error {
 	d.MockState = state.Stopped
 	return nil

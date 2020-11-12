@@ -322,16 +322,6 @@ func (d *Driver) Remove() error {
 	return cmd("Hyper-V\\Remove-VM", d.MachineName, "-Force")
 }
 
-// Restart stops and starts an host
-func (d *Driver) Restart() error {
-	err := d.Stop()
-	if err != nil {
-		return err
-	}
-
-	return d.Start()
-}
-
 // Kill force stops an host
 func (d *Driver) Kill() error {
 	if err := cmd("Hyper-V\\Stop-VM", d.MachineName, "-TurnOff"); err != nil {

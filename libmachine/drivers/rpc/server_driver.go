@@ -125,10 +125,6 @@ func (r *RPCServerDriver) Remove(_ *struct{}, _ *struct{}) error {
 	return r.ActualDriver.Remove()
 }
 
-func (r *RPCServerDriver) Restart(_ *struct{}, _ *struct{}) error {
-	return r.ActualDriver.Restart()
-}
-
 func (r *RPCServerDriver) Start(_ *struct{}, _ *struct{}) error {
 	return r.ActualDriver.Start()
 }

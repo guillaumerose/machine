@@ -79,24 +79,6 @@ func (h *Host) Kill() error {
 	return nil
 }
 
-func (h *Host) Restart() error {
-	log.Infof("Restarting %q...", h.Name)
-	if drivers.MachineInState(h.Driver, state.Stopped)() {
-		if err := h.Start(); err != nil {
-			return err
-		}
-	} else if drivers.MachineInState(h.Driver, state.Running)() {
-		if err := h.Driver.Restart(); err != nil {
-			return err
-		}
-		if err := mcnutils.WaitFor(drivers.MachineInState(h.Driver, state.Running)); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (h *Host) UpdateConfig(rawConfig []byte) error {
 	err := h.Driver.UpdateConfigRaw(rawConfig)
 	if err != nil {

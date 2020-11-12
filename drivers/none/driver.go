@@ -50,10 +50,6 @@ func (d *Driver) Remove() error {
 	return nil
 }
 
-func (d *Driver) Restart() error {
-	return fmt.Errorf("hosts without a driver cannot be restarted")
-}
-
 func (d *Driver) UpdateConfigRaw(rawData []byte) error {
 	return fmt.Errorf("hosts without a driver cannot be updated")
 }

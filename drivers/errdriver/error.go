@@ -75,10 +75,6 @@ func (d *Driver) Stop() error {
 	return NotLoadable{d.Name}
 }
 
-func (d *Driver) Restart() error {
-	return NotLoadable{d.Name}
-}
-
 func (d *Driver) Kill() error {
 	return NotLoadable{d.Name}
 }

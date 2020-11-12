@@ -39,10 +39,6 @@ type Driver interface {
 	// Remove a host
 	Remove() error
 
-	// Restart a host. This may just call Stop(); Start() if the provider does not
-	// have any special restart behaviour.
-	Restart() error
-
 	// UpdateConfigRaw allows to change the state (memory, ...) of an already created machine
 	UpdateConfigRaw(rawDriver []byte) error
 

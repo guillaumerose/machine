@@ -312,10 +312,6 @@ func (c *RPCClientDriver) Stop() error {
 	return c.Client.Call(StopMethod, struct{}{}, nil)
 }
 
-func (c *RPCClientDriver) Restart() error {
-	return c.Client.Call(RestartMethod, struct{}{}, nil)
-}
-
 func (c *RPCClientDriver) Kill() error {
 	return c.Client.Call(KillMethod, struct{}{}, nil)
 }
