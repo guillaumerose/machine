@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/code-ready/machine/drivers/errdriver"
 	"github.com/code-ready/machine/drivers/hyperv"
 	"github.com/code-ready/machine/libmachine/drivers"
-	"github.com/code-ready/machine/libmachine/drivers/plugin/localbinary"
 	rpcdriver "github.com/code-ready/machine/libmachine/drivers/rpc"
 	"github.com/code-ready/machine/libmachine/host"
 	"github.com/code-ready/machine/libmachine/log"
@@ -84,16 +82,9 @@ func (api *Client) Load(name string) (*host.Host, error) {
 
 	d, err := api.clientDriverFactory.NewRPCClientDriver(h.DriverName, h.DriverPath, h.RawDriver)
 	if err != nil {
-		// Not being able to find a driver binary is a "known error"
-		if _, ok := err.(localbinary.ErrPluginBinaryNotFound); ok {
-			h.Driver = errdriver.NewDriver(h.DriverName)
-			return h, nil
-		}
 		return nil, err
 	}
-
 	h.Driver = d
-
 	return h, nil
 }
 

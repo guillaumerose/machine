@@ -79,15 +79,6 @@ type Executor struct {
 	binaryPath                 string
 }
 
-type ErrPluginBinaryNotFound struct {
-	driverName string
-	driverPath string
-}
-
-func (e ErrPluginBinaryNotFound) Error() string {
-	return fmt.Sprintf("Driver %q not found. Do you have the plugin binary %q accessible in your PATH?", e.driverName, e.driverPath)
-}
-
 // driverPath finds the path of a driver binary by its name. The separate binary must be in the PATH and its name must be
 // `crc-machine-driverName`
 func driverPath(driverName string, binaryPath string) string {
@@ -102,7 +93,7 @@ func NewPlugin(driverName string, binaryPath string) (*Plugin, error) {
 	driverPath := driverPath(driverName, binaryPath)
 	binaryPath, err := exec.LookPath(driverPath)
 	if err != nil {
-		return nil, ErrPluginBinaryNotFound{driverName, driverPath}
+		return nil, err
 	}
 
 	log.Debugf("Found binary path at %s", binaryPath)
