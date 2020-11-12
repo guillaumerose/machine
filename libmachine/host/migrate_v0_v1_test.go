@@ -6,54 +6,7 @@ import (
 
 	"github.com/code-ready/machine/libmachine/auth"
 	"github.com/code-ready/machine/libmachine/engine"
-	"github.com/code-ready/machine/libmachine/swarm"
 )
-
-func TestMigrateHostV0ToV1(t *testing.T) {
-	originalHost := &V0{
-		HostOptions:    nil,
-		SwarmDiscovery: "token://foobar",
-		SwarmHost:      "1.2.3.4:2376",
-		SwarmMaster:    true,
-		CaCertPath:     "/tmp/migration/certs/ca.pem",
-		PrivateKeyPath: "/tmp/migration/certs/ca-key.pem",
-		ClientCertPath: "/tmp/migration/certs/cert.pem",
-		ClientKeyPath:  "/tmp/migration/certs/key.pem",
-		ServerCertPath: "/tmp/migration/certs/server.pem",
-		ServerKeyPath:  "/tmp/migration/certs/server-key.pem",
-	}
-	hostOptions := &OptionsV1{
-		SwarmOptions: &swarm.Options{
-			Master:    true,
-			Discovery: "token://foobar",
-			Host:      "1.2.3.4:2376",
-		},
-		AuthOptions: &AuthOptionsV1{
-			CaCertPath:     "/tmp/migration/certs/ca.pem",
-			PrivateKeyPath: "/tmp/migration/certs/ca-key.pem",
-			ClientCertPath: "/tmp/migration/certs/cert.pem",
-			ClientKeyPath:  "/tmp/migration/certs/key.pem",
-			ServerCertPath: "/tmp/migration/certs/server.pem",
-			ServerKeyPath:  "/tmp/migration/certs/server-key.pem",
-		},
-		EngineOptions: &engine.Options{
-			InstallURL: "https://get.docker.com",
-			TLSVerify:  true,
-		},
-	}
-
-	expectedHost := &V1{
-		HostOptions: hostOptions,
-	}
-
-	host := MigrateHostV0ToHostV1(originalHost)
-
-	if !reflect.DeepEqual(host, expectedHost) {
-		t.Logf("\n%+v\n%+v", host, expectedHost)
-		t.Logf("\n%+v\n%+v", host.HostOptions, expectedHost.HostOptions)
-		t.Fatal("Expected these structs to be equal, they were different")
-	}
-}
 
 func TestMigrateHostMetadataV0ToV1(t *testing.T) {
 	metadata := &MetadataV0{

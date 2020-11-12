@@ -10,12 +10,11 @@ import (
 
 func TestMigrateHost(t *testing.T) {
 	testCases := []struct {
-		description                string
-		hostBefore                 *Host
-		rawData                    []byte
-		expectedHostAfter          *Host
-		expectedMigrationPerformed bool
-		expectedMigrationError     error
+		description            string
+		hostBefore             *Host
+		rawData                []byte
+		expectedHostAfter      *Host
+		expectedMigrationError error
 	}{
 		{
 			// Point of this test is largely that no matter what was in RawDriver
@@ -65,8 +64,7 @@ func TestMigrateHost(t *testing.T) {
 					Driver: none.NewDriver("default", "."),
 				},
 			},
-			expectedMigrationPerformed: false,
-			expectedMigrationError:     nil,
+			expectedMigrationError: nil,
 		},
 		{
 			description: "Config version 4 (from the FUTURE) on disk",
@@ -87,9 +85,8 @@ func TestMigrateHost(t *testing.T) {
     },
     "Name": "default"
 }`),
-			expectedHostAfter:          nil,
-			expectedMigrationPerformed: false,
-			expectedMigrationError:     errConfigFromFuture,
+			expectedHostAfter:      nil,
+			expectedMigrationError: errUnexpectedConfigVersion,
 		},
 		{
 			description: "Config version 3 load WITHOUT any existing RawDriver field on disk",
@@ -127,54 +124,14 @@ func TestMigrateHost(t *testing.T) {
 					Driver: none.NewDriver("default", "."),
 				},
 			},
-			expectedMigrationPerformed: false,
-			expectedMigrationError:     nil,
-		},
-		{
-			description: "Config version 2 load and migrate.  Ensure StorePath gets set properly.",
-			hostBefore: &Host{
-				Name: "default",
-			},
-			rawData: []byte(`{
-    "ConfigVersion": 2,
-    "Driver": {"MachineName": "default"},
-    "DriverName": "virtualbox",
-    "HostOptions": {
-        "Driver": "",
-        "Memory": 0,
-        "Disk": 0,
-        "AuthOptions": {
-            "StorePath": "/Users/nathanleclaire/.code-ready/machine/machines/default"
-        }
-    },
-    "StorePath": "/Users/nathanleclaire/.code-ready/machine/machines/default",
-    "Name": "default"
-}`),
-			expectedHostAfter: &Host{
-				ConfigVersion: 3,
-				HostOptions: &Options{
-					AuthOptions: &auth.Options{
-						StorePath: "/Users/nathanleclaire/.code-ready/machine/machines/default",
-					},
-				},
-				Name:       "default",
-				DriverName: "virtualbox",
-				RawDriver:  []byte(`{"MachineName":"default","StorePath":"/Users/nathanleclaire/.code-ready/machine"}`),
-				Driver: &RawDataDriver{
-					Data:   []byte(`{"MachineName":"default","StorePath":"/Users/nathanleclaire/.code-ready/machine"}`),
-					Driver: none.NewDriver("default", "/Users/nathanleclaire/.code-ready/machine"),
-				},
-			},
-			expectedMigrationPerformed: true,
-			expectedMigrationError:     nil,
+			expectedMigrationError: nil,
 		},
 	}
 
 	for _, tc := range testCases {
-		actualHostAfter, actualMigrationPerformed, actualMigrationError := MigrateHost(tc.hostBefore, tc.rawData)
+		actualHostAfter, actualMigrationError := MigrateHost(tc.hostBefore, tc.rawData)
 
 		assert.Equal(t, tc.expectedHostAfter, actualHostAfter)
-		assert.Equal(t, tc.expectedMigrationPerformed, actualMigrationPerformed)
 		assert.Equal(t, tc.expectedMigrationError, actualMigrationError)
 	}
 }
