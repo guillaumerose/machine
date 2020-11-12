@@ -19,7 +19,6 @@ func TestMigrateHostMetadataV0ToV1(t *testing.T) {
 		ServerCertPath: "/tmp/store/certs/server.pem",
 	}
 	expectedAuthOptions := &auth.Options{
-		StorePath:      "/tmp/store",
 		CaCertPath:     "/tmp/store/certs/ca.pem",
 		ServerCertPath: "/tmp/store/certs/server.pem",
 	}

@@ -41,9 +41,7 @@ func TestMigrateHost(t *testing.T) {
 			expectedHostAfter: &Host{
 				ConfigVersion: 3,
 				HostOptions: &Options{
-					AuthOptions: &auth.Options{
-						StorePath: "/Users/nathanleclaire/.code-ready/machine/machines/default",
-					},
+					AuthOptions: &auth.Options{},
 				},
 				Name:       "default",
 				DriverName: "virtualbox",
@@ -57,7 +55,7 @@ func TestMigrateHost(t *testing.T) {
 					//
 					// These default StorePath settings get over-written when we
 					// instantiate the plugin driver, but this seems entirely incidental.
-					Driver: none.NewDriver("default", "."),
+					Driver: none.NewDriver("default", ""),
 				},
 			},
 			expectedMigrationError: nil,
@@ -100,9 +98,7 @@ func TestMigrateHost(t *testing.T) {
 			expectedHostAfter: &Host{
 				ConfigVersion: 3,
 				HostOptions: &Options{
-					AuthOptions: &auth.Options{
-						StorePath: "/Users/nathanleclaire/.code-ready/machine/machines/default",
-					},
+					AuthOptions: &auth.Options{},
 				},
 				Name:       "default",
 				DriverName: "virtualbox",
@@ -111,7 +107,7 @@ func TestMigrateHost(t *testing.T) {
 					Data: []byte(`{"MachineName": "default"}`),
 
 					// TODO: See note above.
-					Driver: none.NewDriver("default", "."),
+					Driver: none.NewDriver("default", ""),
 				},
 			},
 			expectedMigrationError: nil,

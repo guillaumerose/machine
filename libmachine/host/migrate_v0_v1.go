@@ -12,7 +12,6 @@ func MigrateHostMetadataV0ToHostMetadataV1(m *MetadataV0) *Metadata {
 	hostMetadata.DriverName = m.DriverName
 	hostMetadata.HostOptions.EngineOptions = &engine.Options{}
 	hostMetadata.HostOptions.AuthOptions = &auth.Options{
-		StorePath:            m.StorePath,
 		CaCertPath:           m.CaCertPath,
 		CaCertRemotePath:     "",
 		ServerCertPath:       m.ServerCertPath,

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"path/filepath"
 
 	"github.com/code-ready/machine/drivers/none"
 	"github.com/code-ready/machine/libmachine/version"
@@ -57,8 +56,7 @@ func MigrateHost(name string, data []byte) (*Host, error) {
 		return nil, errUnexpectedConfigVersion
 	}
 
-	globalStorePath := filepath.Dir(filepath.Dir(migratedHostMetadata.HostOptions.AuthOptions.StorePath))
-	driver := &RawDataDriver{none.NewDriver(name, globalStorePath), nil}
+	driver := &RawDataDriver{none.NewDriver(name, ""), nil}
 	h := Host{
 		Name:   name,
 		Driver: driver,
