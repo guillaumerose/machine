@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/code-ready/machine/drivers/none"
-	"github.com/code-ready/machine/libmachine/auth"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,12 +39,9 @@ func TestMigrateHost(t *testing.T) {
 }`),
 			expectedHostAfter: &Host{
 				ConfigVersion: 3,
-				HostOptions: &Options{
-					AuthOptions: &auth.Options{},
-				},
-				Name:       "default",
-				DriverName: "virtualbox",
-				RawDriver:  []byte(`{"MachineName": "default"}`),
+				Name:          "default",
+				DriverName:    "virtualbox",
+				RawDriver:     []byte(`{"MachineName": "default"}`),
 				Driver: &RawDataDriver{
 					Data: []byte(`{"MachineName": "default"}`),
 
@@ -97,12 +93,9 @@ func TestMigrateHost(t *testing.T) {
 }`),
 			expectedHostAfter: &Host{
 				ConfigVersion: 3,
-				HostOptions: &Options{
-					AuthOptions: &auth.Options{},
-				},
-				Name:       "default",
-				DriverName: "virtualbox",
-				RawDriver:  []byte(`{"MachineName": "default"}`),
+				Name:          "default",
+				DriverName:    "virtualbox",
+				RawDriver:     []byte(`{"MachineName": "default"}`),
 				Driver: &RawDataDriver{
 					Data: []byte(`{"MachineName": "default"}`),
 

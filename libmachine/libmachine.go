@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"path/filepath"
 
 	"github.com/code-ready/machine/drivers/errdriver"
 	"github.com/code-ready/machine/drivers/hyperv"
-	"github.com/code-ready/machine/libmachine/auth"
 	"github.com/code-ready/machine/libmachine/drivers"
 	"github.com/code-ready/machine/libmachine/drivers/plugin/localbinary"
 	rpcdriver "github.com/code-ready/machine/libmachine/drivers/rpc"
@@ -67,18 +65,7 @@ func (api *Client) NewHost(driverName string, driverPath string, rawDriver []byt
 		Driver:        driver,
 		DriverName:    driver.DriverName(),
 		DriverPath:    driverPath,
-		HostOptions: &host.Options{
-			AuthOptions: &auth.Options{
-				CertDir:          api.certsDir,
-				CaCertPath:       filepath.Join(api.certsDir, "ca.pem"),
-				CaPrivateKeyPath: filepath.Join(api.certsDir, "ca-key.pem"),
-				ClientCertPath:   filepath.Join(api.certsDir, "cert.pem"),
-				ClientKeyPath:    filepath.Join(api.certsDir, "key.pem"),
-				ServerCertPath:   filepath.Join(api.GetMachinesDir(), "server.pem"),
-				ServerKeyPath:    filepath.Join(api.GetMachinesDir(), "server-key.pem"),
-			},
-		},
-		RawDriver: rawDriver,
+		RawDriver:     rawDriver,
 	}, nil
 }
 

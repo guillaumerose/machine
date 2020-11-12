@@ -5,14 +5,11 @@ import (
 	"net/rpc"
 	"regexp"
 
-	"github.com/code-ready/machine/libmachine/auth"
 	"github.com/code-ready/machine/libmachine/drivers"
-	"github.com/code-ready/machine/libmachine/engine"
 	"github.com/code-ready/machine/libmachine/log"
 	"github.com/code-ready/machine/libmachine/mcnerror"
 	"github.com/code-ready/machine/libmachine/mcnutils"
 	"github.com/code-ready/machine/libmachine/state"
-	"github.com/code-ready/machine/libmachine/swarm"
 )
 
 var (
@@ -24,18 +21,8 @@ type Host struct {
 	Driver        drivers.Driver
 	DriverName    string
 	DriverPath    string
-	HostOptions   *Options
 	Name          string
 	RawDriver     []byte `json:"-"`
-}
-
-type Options struct {
-	Driver        string
-	Memory        int
-	Disk          int
-	EngineOptions *engine.Options
-	SwarmOptions  *swarm.Options
-	AuthOptions   *auth.Options
 }
 
 type Metadata struct {

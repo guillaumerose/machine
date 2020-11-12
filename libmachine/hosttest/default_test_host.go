@@ -2,10 +2,7 @@ package hosttest
 
 import (
 	"github.com/code-ready/machine/drivers/none"
-	"github.com/code-ready/machine/libmachine/auth"
-	"github.com/code-ready/machine/libmachine/engine"
 	"github.com/code-ready/machine/libmachine/host"
-	"github.com/code-ready/machine/libmachine/swarm"
 	"github.com/code-ready/machine/libmachine/version"
 )
 
@@ -50,15 +47,6 @@ func GetTestDriverFlags() *DriverOptionsMock {
 }
 
 func GetDefaultTestHost() (*host.Host, error) {
-	hostOptions := &host.Options{
-		EngineOptions: &engine.Options{},
-		SwarmOptions:  &swarm.Options{},
-		AuthOptions: &auth.Options{
-			CaCertPath:       HostTestCaCert,
-			CaPrivateKeyPath: HostTestPrivateKey,
-		},
-	}
-
 	driver := none.NewDriver(DefaultHostName, "/tmp/artifacts")
 
 	host := &host.Host{
@@ -66,7 +54,6 @@ func GetDefaultTestHost() (*host.Host, error) {
 		Name:          DefaultHostName,
 		Driver:        driver,
 		DriverName:    "none",
-		HostOptions:   hostOptions,
 	}
 
 	flags := GetTestDriverFlags()
