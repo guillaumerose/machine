@@ -26,15 +26,12 @@ type API interface {
 }
 
 type Client struct {
-	IsDebug        bool
-	GithubAPIToken string
 	*persist.Filestore
 	clientDriverFactory rpcdriver.RPCClientDriverFactory
 }
 
 func NewClient(storePath string) *Client {
 	return &Client{
-		IsDebug:             false,
 		Filestore:           persist.NewFilestore(storePath),
 		clientDriverFactory: rpcdriver.NewRPCClientDriverFactory(),
 	}
