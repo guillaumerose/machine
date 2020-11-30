@@ -100,14 +100,6 @@ func (s Filestore) Exists(name string) (bool, error) {
 	return false, err
 }
 
-func (s Filestore) loadConfig(name string) (*host.Host, error) {
-	data, err := ioutil.ReadFile(filepath.Join(s.GetMachinesDir(), name, "config.json"))
-	if err != nil {
-		return nil, err
-	}
-	return host.MigrateHost(name, data)
-}
-
 func (s Filestore) Load(name string) (*host.Host, error) {
 	hostPath := filepath.Join(s.GetMachinesDir(), name)
 
@@ -116,5 +108,9 @@ func (s Filestore) Load(name string) (*host.Host, error) {
 			Name: name,
 		}
 	}
-	return s.loadConfig(name)
+	data, err := ioutil.ReadFile(filepath.Join(s.GetMachinesDir(), name, "config.json"))
+	if err != nil {
+		return nil, err
+	}
+	return host.MigrateHost(name, data)
 }
