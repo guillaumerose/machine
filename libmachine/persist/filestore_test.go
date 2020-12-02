@@ -26,9 +26,7 @@ func getTestStore() Filestore {
 	}
 
 	return Filestore{
-		Path:             tmpDir,
-		CaCertPath:       filepath.Join(tmpDir, "certs", "ca-cert.pem"),
-		CaPrivateKeyPath: filepath.Join(tmpDir, "certs", "ca-key.pem"),
+		Path: tmpDir,
 	}
 }
 
@@ -127,33 +125,6 @@ func TestStoreRemove(t *testing.T) {
 	}
 }
 
-func TestStoreList(t *testing.T) {
-	defer cleanup()
-
-	store := getTestStore()
-
-	h, err := hosttest.GetDefaultTestHost()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if err := store.Save(h); err != nil {
-		t.Fatal(err)
-	}
-
-	hosts, err := store.List()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(hosts) != 1 {
-		t.Fatalf("List returned %d items, expected 1", len(hosts))
-	}
-
-	if hosts[0] != h.Name {
-		t.Fatalf("hosts[0] name is incorrect, got: %s", hosts[0])
-	}
-}
-
 func TestStoreExists(t *testing.T) {
 	defer cleanup()
 	store := getTestStore()
@@ -205,18 +176,10 @@ func TestStoreExists(t *testing.T) {
 func TestStoreLoad(t *testing.T) {
 	defer cleanup()
 
-	expectedURL := "unix:///foo/baz"
-	flags := hosttest.GetTestDriverFlags()
-	flags.Data["url"] = expectedURL
-
 	store := getTestStore()
 
 	h, err := hosttest.GetDefaultTestHost()
 	if err != nil {
-		t.Fatal(err)
-	}
-
-	if err := h.Driver.SetConfigFromFlags(flags); err != nil {
 		t.Fatal(err)
 	}
 
@@ -238,16 +201,5 @@ func TestStoreLoad(t *testing.T) {
 
 	if err := json.Unmarshal(rawDataDriver.Data, &realDriver); err != nil {
 		t.Fatalf("Error unmarshaling rawDataDriver data into concrete 'none' driver: %s", err)
-	}
-
-	h.Driver = realDriver
-
-	actualURL, err := h.URL()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if actualURL != expectedURL {
-		t.Fatalf("GetURL is not %q, got %q", expectedURL, actualURL)
 	}
 }

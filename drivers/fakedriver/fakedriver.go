@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/code-ready/machine/libmachine/drivers"
-	"github.com/code-ready/machine/libmachine/mcnflag"
 	"github.com/code-ready/machine/libmachine/state"
 )
 
@@ -15,32 +14,13 @@ type Driver struct {
 	MockName  string
 }
 
-func (d *Driver) GetCreateFlags() []mcnflag.Flag {
-	return []mcnflag.Flag{}
-}
-
 // DriverName returns the name of the driver
 func (d *Driver) DriverName() string {
 	return "Driver"
 }
 
-func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
+func (d *Driver) UpdateConfigRaw(rawData []byte) error {
 	return nil
-}
-
-func (d* Driver) UpdateConfigRaw(rawData []byte) error {
-	return nil
-}
-
-func (d *Driver) GetURL() (string, error) {
-	ip, err := d.GetIP()
-	if err != nil {
-		return "", err
-	}
-	if ip == "" {
-		return "", nil
-	}
-	return fmt.Sprintf("tcp://%s:2376", ip), nil
 }
 
 func (d *Driver) GetMachineName() string {
@@ -60,22 +40,6 @@ func (d *Driver) GetIP() (string, error) {
 	return d.MockIP, nil
 }
 
-func (d *Driver) GetSSHHostname() (string, error) {
-	return "", nil
-}
-
-func (d *Driver) GetSSHKeyPath() string {
-	return ""
-}
-
-func (d *Driver) GetSSHPort() (int, error) {
-	return 0, nil
-}
-
-func (d *Driver) GetSSHUsername() string {
-	return ""
-}
-
 func (d *Driver) GetState() (state.State, error) {
 	return d.MockState, nil
 }
@@ -91,11 +55,6 @@ func (d *Driver) Start() error {
 
 func (d *Driver) Stop() error {
 	d.MockState = state.Stopped
-	return nil
-}
-
-func (d *Driver) Restart() error {
-	d.MockState = state.Running
 	return nil
 }
 
