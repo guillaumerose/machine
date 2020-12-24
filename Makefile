@@ -1,18 +1,15 @@
-# Plain make targets if not requested inside a container
-ifneq (,$(findstring test-integration,$(MAKECMDGOALS)))
-	include Makefile.inc
-	include mk/main.mk
-else ifneq ($(USE_CONTAINER), true)
-	include Makefile.inc
-	include mk/main.mk
-else
-# Otherwise, with docker, swallow all targets and forward into a container
-DOCKER_BUILD_DONE := ""
+.PHONY: all
+all: vendor lint test
 
-test: .DEFAULT
+.PHONY: vendor
+vendor:
+	go mod tidy
+	go mod vendor
 
-.DEFAULT:
-	@test ! -z "$(DOCKER_BUILD_DONE)" || ./script/build_in_container.sh $(MAKECMDGOALS)
-	$(eval DOCKER_BUILD_DONE := "done")
+.PHONY: lint
+lint:
+	golangci-lint run
 
-endif
+.PHONY: test
+test:
+	go test ./...
