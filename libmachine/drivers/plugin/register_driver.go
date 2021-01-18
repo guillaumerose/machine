@@ -58,7 +58,7 @@ Please use this plugin through the main 'crc' binary.
 		select {
 		case <-rpcd.CloseCh:
 			log.Debug("Closing plugin on server side")
-			os.Exit(0)
+			os.Exit(0) //nolint
 		case <-rpcd.HeartbeatCh:
 			continue
 		case <-time.After(heartbeatTimeout):
