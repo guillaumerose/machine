@@ -2,30 +2,16 @@ package localbinary
 
 import (
 	"bufio"
-	"fmt"
+	"bytes"
 	"io"
+	"os"
+	"strings"
 	"testing"
 	"time"
 
-	"os"
-
-	"github.com/code-ready/machine/libmachine/log"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
-
-type FakeExecutor struct {
-	stdout, stderr io.ReadCloser
-	closed         bool
-}
-
-func (fe *FakeExecutor) Start() (*bufio.Scanner, *bufio.Scanner, error) {
-	return bufio.NewScanner(fe.stdout), bufio.NewScanner(fe.stderr), nil
-}
-
-func (fe *FakeExecutor) Close() error {
-	fe.closed = true
-	return nil
-}
 
 func TestLocalBinaryPluginAddress(t *testing.T) {
 	lbp := &Plugin{}
@@ -80,80 +66,47 @@ func TestLocalBinaryPluginClose(t *testing.T) {
 }
 
 func TestExecServer(t *testing.T) {
-	logOutReader, logOutWriter := io.Pipe()
-	logErrReader, logErrWriter := io.Pipe()
+	var buffer bytes.Buffer
 
-	log.SetDebug(true)
-	log.SetOutWriter(logOutWriter)
-	log.SetErrWriter(logErrWriter)
+	log.SetLevel(log.DebugLevel)
+	log.SetOutput(io.MultiWriter(&buffer, os.Stderr))
 
-	defer func() {
-		log.SetDebug(false)
-		log.SetOutWriter(os.Stdout)
-		log.SetErrWriter(os.Stderr)
-	}()
-
-	stdoutReader, stdoutWriter := io.Pipe()
-	stderrReader, stderrWriter := io.Pipe()
-
-	fe := &FakeExecutor{
-		stdout: stdoutReader,
-		stderr: stderrReader,
-	}
-
-	machineName := "test"
+	executor := &FakeExecutor{}
 	lbp := &Plugin{
-		MachineName: machineName,
-		Executor:    fe,
+		MachineName: "test",
+		Executor:    executor,
 		addrCh:      make(chan string, 1),
 		stopCh:      make(chan struct{}),
+		timeout:     time.Second,
 	}
 
-	finalErr := make(chan error)
-
-	// Start the docker-machine-foo plugin server
+	done := make(chan error)
 	go func() {
-		finalErr <- lbp.execServer()
+		done <- lbp.execServer()
 	}()
 
-	logOutScanner := bufio.NewScanner(logOutReader)
-	logErrScanner := bufio.NewScanner(logErrReader)
+	addr, err := lbp.Address()
+	assert.NoError(t, err)
+	assert.Equal(t, "127.0.0.1:12345", addr)
 
-	// Write the ip address
-	expectedAddr := "127.0.0.1:12345"
-	if _, err := io.WriteString(stdoutWriter, expectedAddr+"\n"); err != nil {
-		t.Fatalf("Error attempting to write plugin address: %s", err)
-	}
+	assert.Eventually(t, func() bool {
+		return strings.Contains(buffer.String(), "(test) DBG | Uh oh, something in plugin went wrong...") &&
+			strings.Contains(buffer.String(), "(test) Doing some fun plugin stuff...")
+	}, time.Second, 100*time.Millisecond) // logs do not appear instantly
 
-	if addr := <-lbp.addrCh; addr != expectedAddr {
-		t.Fatalf("Expected to read the expected address properly in server but did not")
-	}
+	_ = lbp.Close()
+	assert.NoError(t, <-done)
+}
 
-	// Write a log in stdout
-	expectedPluginOut := "Doing some fun plugin stuff..."
-	if _, err := io.WriteString(stdoutWriter, expectedPluginOut+"\n"); err != nil {
-		t.Fatalf("Error attempting to write to out in plugin: %s", err)
-	}
+type FakeExecutor struct {
+}
 
-	expectedOut := fmt.Sprintf(pluginOut, machineName, expectedPluginOut)
-	if logOutScanner.Scan(); logOutScanner.Text() != expectedOut {
-		t.Fatalf("Output written to log was not what we expected\nexpected: %s\nactual:   %s", expectedOut, logOutScanner.Text())
-	}
+func (fe *FakeExecutor) Start() (*bufio.Scanner, *bufio.Scanner, error) {
+	stdout := "127.0.0.1:12345\nDoing some fun plugin stuff...\n"
+	stderr := "Uh oh, something in plugin went wrong...\n"
+	return bufio.NewScanner(bytes.NewReader([]byte(stdout))), bufio.NewScanner(bytes.NewReader([]byte(stderr))), nil
+}
 
-	// Write a log in stderr
-	expectedPluginErr := "Uh oh, something in plugin went wrong..."
-	if _, err := io.WriteString(stderrWriter, expectedPluginErr+"\n"); err != nil {
-		t.Fatalf("Error attempting to write to err in plugin: %s", err)
-	}
-
-	expectedErr := fmt.Sprintf(pluginErr, machineName, expectedPluginErr)
-	if logErrScanner.Scan(); logErrScanner.Text() != expectedErr {
-		t.Fatalf("Error written to log was not what we expected\nexpected: %s\nactual:   %s", expectedErr, logErrScanner.Text())
-	}
-
-	lbp.Close()
-
-	if err := <-finalErr; err != nil {
-		t.Fatalf("Error serving: %s", err)
-	}
+func (fe *FakeExecutor) Close() error {
+	return nil
 }
