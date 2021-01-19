@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/code-ready/machine/libmachine/log"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
