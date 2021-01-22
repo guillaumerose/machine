@@ -2,11 +2,10 @@ package rpcdriver
 
 import (
 	"fmt"
+	"io"
 	"net/rpc"
 	"sync"
 	"time"
-
-	"io"
 
 	"github.com/code-ready/machine/libmachine/drivers/plugin/localbinary"
 	"github.com/code-ready/machine/libmachine/log"
@@ -36,7 +35,7 @@ func NewRPCClientDriverFactory() RPCClientDriverFactory {
 }
 
 type RPCClientDriver struct {
-	plugin          localbinary.DriverPlugin
+	plugin          io.Closer
 	heartbeatDoneCh chan bool
 	Client          *InternalClient
 }
