@@ -20,6 +20,7 @@ type Driver struct {
 	InitrdPath    string
 	KernelCmdLine string
 	HyperKitPath  string
+	QcowToolPath  string
 	VMNet         bool
 }
 
